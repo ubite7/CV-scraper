@@ -1,0 +1,11 @@
+import datetime
+import requests
+
+today = datetime.date.today()
+print(datetime.date.today())
+gg = str(today)
+print(gg)
+html_text = requests.get('https://www2.cv.lv/search?limit=20&offset=0&categories%5B0%5D=INFORMATION_TECHNOLOGY&keywords%5B0%5D=python&isHourlySalary=false').text.encode(encoding='UTF-8')
+
+with open(f'kods_{today}.html', 'wb') as f:
+    f.write(html_text)
