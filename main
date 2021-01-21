@@ -1,0 +1,45 @@
+from bs4 import BeautifulSoup
+import datetime
+import csv
+
+today = datetime.date.today()
+
+atributes = ['Company', 'Job Title', 'Offered Salary', 'Job Location', 'Published', 'Link To Ad']
+filename = f'ads_{today}.csv'
+
+ads = []
+text_from_file = open(f'kods_{today}.html', 'rb')
+soup = BeautifulSoup(text_from_file, 'lxml')
+jobs = soup.findAll("li", class_='jsx-3752991021 jsx-1193941219 vacancies-list__item')
+for job in jobs:
+    job_title = job.find('span', class_='jsx-1471379408 vacancy-item__title').text
+    info_place = str(job).find('href')
+    c = str(job).find('"', 167)
+    g = int(info_place)
+    for_link = str(job)
+    link = str('https://www2.cv.lv'+for_link[g+6:c])
+    print(link)
+    try:
+        salary = job.find('span', class_="jsx-1471379408 vacancy-item__salary-label").text.split('€ ')[1]
+    except:
+        salary = "None"
+
+    #print(salary)
+    #print(job_title)
+    company = job.find('div', class_="jsx-1471379408 vacancy-item__info-main").text.split("\xa0—\xa0")[0]
+    #print(company)
+    location = job.find('span', class_="jsx-1471379408 vacancy-item__locations").text.split('\xa0—\xa0')[1]
+    #print(location)
+    published = job.find('span', class_="jsx-1471379408 secondary-text").text
+    #print(published)
+
+    ad = [company,job_title,salary, location, published, link]
+    #print(ad)
+    ads.append(ad)
+
+print(ads)
+
+with open(filename, 'w', encoding='utf-16') as csvfile:
+    csvwriter = csv.writer(csvfile)
+    csvwriter.writerow(atributes)
+    csvwriter.writerows(ads)
